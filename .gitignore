@@ -1,0 +1,9 @@
+# ignore
+**/#*
+**/.*
+**/_*
+virtual_environment
+
+# keep
+!.git
+!.gitignore
