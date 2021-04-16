@@ -10,5 +10,5 @@ pid = os.fork()
 if (pid > 0): # parent process
 	os.waitpid(pid, 0) # wait for child process to end
 elif (pid == 0): # child process
-	ocrmypdf.ocr(input, output, force_ocr=True, language="eng") # output pdf is PDF/A compliant
+	ocrmypdf.ocr(input, output, force_ocr=True, output_type="pdf", language="eng")
 	os._exit(0)
