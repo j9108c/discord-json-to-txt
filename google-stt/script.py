@@ -74,8 +74,8 @@ if __name__ == "__main__":
 			filepath = f"{script_root}/data/{file}"
 			filename_no_ext = os.path.splitext(file)[0]
 
-			audio_sample_rate = -1
-			audio_channels = -1
+			audio_sample_rate = None
+			audio_channels = None
 			try:
 				audio_sample_rate = int(ffprobe(filepath, "sample_rate").stdout.split("\n")[0])
 				audio_channels = int(ffprobe(filepath, "channels").stdout.split("\n")[0])
