@@ -140,8 +140,7 @@ if __name__ == "__main__":
 			except Exception as err:
 				sys.exit(err)
 
-	for operation in stt_operations:
-		while not operation.done():
-			time.sleep(1)
+	while not all([operation.done() for operation in stt_operations]):
+		time.sleep(1)
 
 	print("completed with no errors")
