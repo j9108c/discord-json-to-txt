@@ -15,7 +15,7 @@ def ffprobe(filepath, stream):
 
 def ffmpeg(filepath, stt_audio_path, sample_rate=None):
 	if sample_rate:
-		subprocess.run(["ffmpeg", "-i", filepath, "-ar", f"{sample_rate}", "-ac", "1", stt_audio_path], check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+		subprocess.run(["ffmpeg", "-i", filepath, "-ar", str(sample_rate), "-ac", "1", stt_audio_path], check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 	else:
 		subprocess.run(["ffmpeg", "-i", filepath, "-ac", "1", stt_audio_path], check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
@@ -82,8 +82,7 @@ if __name__ == "__main__":
 			except subprocess.CalledProcessError as err:
 				sys.exit(err)
 
-			stt_audio_path = f"{script_root}/data/{file}" if file_extension == "wav" else f"{script_root}/data/{filename_no_ext}.flac"
-
+			stt_audio_path = None
 			created_new_file = False
 			if not (file_extension == "wav" or file_extension == "flac") or not (audio_sample_rate >= 8000 and audio_sample_rate <= 48000) or audio_channels != 1:
 				stt_audio_path = f"{script_root}/data/{filename_no_ext} (temp).flac"
@@ -92,14 +91,20 @@ if __name__ == "__main__":
 				try:
 					if audio_sample_rate >= 16000:
 						ffmpeg(filepath, stt_audio_path, 16000)
+						stt_config.sample_rate_hertz = 16000
 					elif audio_sample_rate >= 8000:
 						ffmpeg(filepath, stt_audio_path)
+						stt_config.sample_rate_hertz = audio_sample_rate
 					else:
 						ffmpeg(filepath, stt_audio_path, 8000)
+						stt_config.sample_rate_hertz = 8000
 				except subprocess.CalledProcessError as err:
 					sys.exit(err)
 				print(f"({file}) created temp audio file")
 				created_new_file = True
+			else:
+				stt_audio_path = filepath
+				stt_config.sample_rate_hertz = audio_sample_rate
 
 			stt_audio_filename = os.path.splitext(stt_audio_path)[0].split("/")[-1] + os.path.splitext(stt_audio_path)[1]
 
